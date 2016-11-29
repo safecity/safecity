@@ -6,10 +6,12 @@ master dataset
 import csv
 from collections import defaultdict
 from functions import get_box_index
+from safecity import BlockInfo
+
 
 def load_from_csv(filename, lat_index, long_index):
     first = False
-    with open('data/'+filename, 'r') as csvfile:
+    with open('data/' + filename, 'r') as csvfile:
         service_reader = csv.reader(csvfile)
         for row in service_reader:
             if not first:
@@ -30,14 +32,30 @@ def load_from_csv(filename, lat_index, long_index):
             except:
                 raise
 
+
 def load_service_requests(master_dataset):
     for index, row in load_from_csv('service_requests.csv', 13, 14):
-        master_dataset[index]["services"] += 1
+        if "OPEN" in row[1].upper():
+            master_dataset[index].open_services += 1
+        else:
+            master_dataset[index].closed_services += 1
     print("Service requests loaded")
 
+
 def prepare_dataset():
-    master_table = defaultdict(lambda :defaultdict(int))
+    master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
+
+    # Process the rows if necessary
+    for index, block in master_table.items():
+        block.index = index
 
     # Write the master table in csv file
     print("Writing into output file")
+
+    with open('data/master.csv', 'w', newline='') as csvfile:
+        scwriter = csv.writer(csvfile)
+
+        BlockInfo.output_header(scwriter)
+        for index, block in master_table.items():
+            block.output_csv(scwriter)
