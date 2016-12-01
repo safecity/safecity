@@ -48,7 +48,7 @@ def load_redlight_violations(master_dataset):
     of surrounding blocks also. Weightage can be given to blocks near the block containing
     traffic light
     """
-    for index, row in load_from_csv('redlight.csv', 7, 8):
+    for index, row in load_from_csv('redlight_violations.csv', 7, 8):
         master_dataset[index].redlight_violations += 1
     print("Redlight violations dataset loaded")
 
