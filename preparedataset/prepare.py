@@ -41,10 +41,23 @@ def load_service_requests(master_dataset):
             master_dataset[index].closed_services += 1
     print("Service requests loaded")
 
+def load_redlight_violations(master_dataset):
+    """
+    Loads the redlight traffic violation data. NOTE: Redlight violation is concentrated
+    in crossing and other places. This needs to be spread out by increasing the count
+    of surrounding blocks also. Weightage can be given to blocks near the block containing
+    traffic light
+    """
+    for index, row in load_from_csv('redlight.csv', 7, 8):
+        master_dataset[index].redlight_violations += 1
+    print("Redlight violations dataset loaded")
+
+
 
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
+    load_redlight_violations(master_table)
 
     # Process the rows if necessary
     for index, block in master_table.items():
