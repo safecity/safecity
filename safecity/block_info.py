@@ -14,6 +14,7 @@ class BlockInfo:
         self.index = (0, 0)
 
         self.average_traffic_count = 0
+        self.police_stations = 0
 
     def output_csv(self, csvfile):
         csvfile.writerow(list(self.index) +

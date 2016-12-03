@@ -41,6 +41,7 @@ def load_service_requests(master_dataset):
             master_dataset[index].closed_services += 1
     print("Service requests loaded")
 
+
 def load_average_traffic_count(master_dataset):
     """
     TODO: For average traffic count, it is better to increase the traffic volume count
@@ -63,12 +64,21 @@ def load_redlight_violations(master_dataset):
     print("Redlight violations dataset loaded")
 
 
+def load_police_stations(master_dataset):
+    """
+    Loads the police stations data
+    """
+    for index, row in load_from_csv('police_stations.csv', 12, 13):
+        master_dataset[index].police_stations += 1
+    print("Police Station dataset loaded")
+
 
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
     load_redlight_violations(master_table)
     load_average_traffic_count(master_table)
+    load_police_stations(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index
