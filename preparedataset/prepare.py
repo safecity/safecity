@@ -41,6 +41,16 @@ def load_service_requests(master_dataset):
             master_dataset[index].closed_services += 1
     print("Service requests loaded")
 
+def load_average_traffic_count(master_dataset):
+    """
+    TODO: For average traffic count, it is better to increase the traffic volume count
+    of surrounding blocks also...maybe create a gradient for certain distance.
+    """
+    for index, row in load_from_csv('avg_daily_traffic_count.csv', 6, 7):
+        master_dataset[index].average_traffic_count += int(row[4])
+    print("Average Traffic Count updated")
+
+
 def load_redlight_violations(master_dataset):
     """
     Loads the redlight traffic violation data. NOTE: Redlight violation is concentrated
@@ -58,7 +68,7 @@ def prepare_dataset():
     master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
     load_redlight_violations(master_table)
-
+    load_average_traffic_count(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index
