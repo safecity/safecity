@@ -72,6 +72,25 @@ def load_police_stations(master_dataset):
         master_dataset[index].police_stations += 1
     print("Police Station dataset loaded")
 
+def load_public_schools(master_dataset):
+    """
+    Loads the public school data
+    """
+    for index, row in load_from_csv('public_school_data.csv', 72, 73):
+        pass
+    print("Public school progress dataset loaded")
+
+
+
+def load_affordable_housing(master_dataset):
+    """
+    Loads the affordable housing data
+    """
+    for index, row in load_from_csv('affordable_housing.csv', 11, 12):
+        pass
+    print("Affordable Housing dataset loaded")
+
+
 
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
@@ -79,6 +98,8 @@ def prepare_dataset():
     load_redlight_violations(master_table)
     load_average_traffic_count(master_table)
     load_police_stations(master_table)
+    load_affordable_housing(master_table)
+    load_public_schools(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index
