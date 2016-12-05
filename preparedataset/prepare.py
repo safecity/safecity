@@ -12,6 +12,7 @@ from datetime import datetime
 
 
 def load_from_csv(filename, lat_index, long_index):
+    """Loads the csv file lazily"""
     first = False
     with open('data/' + filename, 'r') as csvfile:
         service_reader = csv.reader(csvfile)
@@ -86,6 +87,7 @@ def load_redlight_violations(master_dataset):
     Loads the redlight traffic violation data.
     """
     for index, row in load_from_csv('redlight_violations.csv', 7, 8):
+        print(row[7], row[8])
         x, y = index
         block_radius = 3
         neighbours = [(a, b) for a in
@@ -126,15 +128,28 @@ def load_affordable_housing(master_dataset):
         pass
     print("Affordable Housing dataset loaded")
 
+def load_criminal_data(master_dataset):
+    """
+    Load the criminal dataset
+    """
+    count = 0
+    for index, row in load_from_csv('crimes.csv', 19, 20):
+        master_dataset[index].crimes_count += 1
+        count += 1
+        if(count > 10000):
+            break
+        pass
+    print("Crimes dataset loaded")
 
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
-    load_service_requests(master_table)
-    load_average_traffic_count(master_table)
-    load_redlight_violations(master_table)
-    load_police_stations(master_table)
-    load_affordable_housing(master_table)
-    load_public_schools(master_table)
+    # load_service_requests(master_table)
+    # load_average_traffic_count(master_table)
+    # load_redlight_violations(master_table)
+    # load_police_stations(master_table)
+    # load_affordable_housing(master_table)
+    # load_public_schools(master_table)
+    load_criminal_data(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index

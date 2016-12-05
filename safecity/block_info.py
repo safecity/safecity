@@ -16,14 +16,15 @@ class BlockInfo:
 
         self.average_traffic_count = 0
         self.police_stations = 0
+        self.crimes_count = 0
 
     def output_csv(self, csvfile):
         csvfile.writerow(list(self.index) +
                          [self.open_services, self.closed_services, self.average_service_days, self.redlight_violations,
-                          self.average_traffic_count])
+                          self.average_traffic_count, self.crimes_count])
 
     @staticmethod
     def output_header(csvfile):
         csvfile.writerow(["X", "Y", "Open services",
                           "Closed Services", "Average service complete days", "Traffic light violations",
-                          "Avearge traffic volume count"])
+                          "Avearge traffic volume count", "Number of crimes"])

@@ -10,6 +10,7 @@ as needed)
 * [police_stations.csv](https://data.cityofchicago.org/Public-Safety/Police-Stations/z8bn-74gv)
 * [affordable_housing.csv](https://data.cityofchicago.org/Community-Economic-Development/Affordable-Rental-Housing-Developments/s6ha-ppgi)
 * [public_school_data.csv](https://data.cityofchicago.org/Education/Chicago-Public-Schools-Progress-Report-Cards-2011-/9xs2-f89t)
+* [crimes.csv](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)
 
 
 Install python requirements
