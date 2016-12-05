@@ -36,3 +36,9 @@ if __name__ == "__main__":
     print(vincenty(bottom_left, (bottom_left[0], bottom_left[1] - 2400 * 0.00001)))
     print(vincenty(top_left, (top_left[0], top_left[1] - 2400 * 0.00001)))
 
+
+    print(get_box_index(*top_right))
+    print(get_box_index(*top_left))
+    print(get_box_index(*bottom_left))
+    print(get_box_index(*bottom_right))
+

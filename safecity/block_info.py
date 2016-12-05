@@ -8,6 +8,7 @@ class BlockInfo:
         # self.service_requests = 0
         self.open_services = 0
         self.closed_services = 0
+        self.average_service_days = 0
 
         self.redlight_violations = 0
 
@@ -18,11 +19,11 @@ class BlockInfo:
 
     def output_csv(self, csvfile):
         csvfile.writerow(list(self.index) +
-                         [self.open_services, self.closed_services, self.redlight_violations,
+                         [self.open_services, self.closed_services, self.average_service_days, self.redlight_violations,
                           self.average_traffic_count])
 
     @staticmethod
     def output_header(csvfile):
         csvfile.writerow(["X", "Y", "Open services",
-                          "Closed Services", "Traffic light violations",
+                          "Closed Services", "Average service complete days", "Traffic light violations",
                           "Avearge traffic volume count"])

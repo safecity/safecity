@@ -8,6 +8,7 @@ from collections import defaultdict
 from functions import get_box_index
 from safecity import BlockInfo
 
+from datetime import datetime
 
 def load_from_csv(filename, lat_index, long_index):
     first = False
@@ -34,11 +35,26 @@ def load_from_csv(filename, lat_index, long_index):
 
 
 def load_service_requests(master_dataset):
+    """
+    Loads the service requests data. We only take three things into consideration : the
+    number of open and closed service requests in a block, and if the request is closed,
+    then the number of days it took to complete the request.
+    """
     for index, row in load_from_csv('service_requests.csv', 13, 14):
         if "OPEN" in row[1].upper():
             master_dataset[index].open_services += 1
         else:
             master_dataset[index].closed_services += 1
+            # Find the number of days it took to complete the request
+            start_date = datetime.strptime(row[0], "%m/%d/%Y")
+            complete_date = datetime.strptime(row[2], "%m/%d/%Y")
+
+            number_days = (complete_date-start_date).days
+
+            # Update the average service days
+            master_dataset[index].average_service_days = (
+                master_dataset[index].average_service_days + number_days) / 2
+
     print("Service requests loaded")
 
 
@@ -72,6 +88,7 @@ def load_police_stations(master_dataset):
         master_dataset[index].police_stations += 1
     print("Police Station dataset loaded")
 
+
 def load_public_schools(master_dataset):
     """
     Loads the public school data
@@ -79,7 +96,6 @@ def load_public_schools(master_dataset):
     for index, row in load_from_csv('public_school_data.csv', 72, 73):
         pass
     print("Public school progress dataset loaded")
-
 
 
 def load_affordable_housing(master_dataset):
@@ -91,15 +107,14 @@ def load_affordable_housing(master_dataset):
     print("Affordable Housing dataset loaded")
 
 
-
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
-    load_redlight_violations(master_table)
-    load_average_traffic_count(master_table)
-    load_police_stations(master_table)
-    load_affordable_housing(master_table)
-    load_public_schools(master_table)
+    # load_redlight_violations(master_table)
+    # load_average_traffic_count(master_table)
+    # load_police_stations(master_table)
+    # load_affordable_housing(master_table)
+    # load_public_schools(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index
