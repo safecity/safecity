@@ -47,6 +47,10 @@ class DataLoader:
                     longitude = float(longitude)
 
                     index = get_box_index(latitude, longitude)
+                    # Make sure index is within bounds
+                    x,y = index
+                    if x<0 or x > total_box_width or y < 0 or y > total_box_height:
+                        continue
                     yield index, row
                 except:
                     # continue?
@@ -147,13 +151,12 @@ class DataLoader:
         """
         Load the criminal dataset
         """
-        count = 0
         for index, row in self.load_from_csv('crimes.csv', 19, 20):
             self.master_table[index].crimes_count += 1
-            count += 1
-            if(count > 10000):
-                break
-            pass
+            if(row[8].lower() == "true"):
+                self.master_table[index].arrest_count += 1
+            if(row[9].lower() == "true"):
+                self.master_table[index].domestic_crimes += 1
         print("Crimes dataset loaded")
 
     def load_all(self):
