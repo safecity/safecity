@@ -1,10 +1,9 @@
-
 class BlockInfo:
     """
     Contains information about a block
     """
 
-    def __init__(self):
+    def __init__(self, latitude = -1, longitude = -1):
         # self.service_requests = 0
         self.open_services = 0
         self.closed_services = 0
@@ -17,6 +16,9 @@ class BlockInfo:
         self.average_traffic_count = 0
         self.police_stations = 0
         self.crimes_count = 0
+
+        self.latitude = latitude
+        self.longitude = longitude
 
     def output_csv(self, csvfile):
         csvfile.writerow(list(self.index) +
