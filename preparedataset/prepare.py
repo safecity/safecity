@@ -22,6 +22,7 @@ class DataLoader:
         for i in range(0, total_box_width + 1):
             for j in range(0, total_box_height + 1):
                 self.master_table[(i, j)] = BlockInfo()
+                self.master_table[(i,j)].index = (i,j)
 
                 # Calculate and store the latitude and longitude of each block info
                 # self.master_table[(i,j)] = BlockInfo
