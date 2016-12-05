@@ -66,7 +66,7 @@ def load_average_traffic_count(master_dataset):
     for index, row in load_from_csv('avg_daily_traffic_count.csv', 6, 7):
         x, y = index
         traffic_count = int(row[4])
-        block_radius = 6
+        block_radius = 3
         neighbours = [(a, b) for a in
                 range(max(0, x - block_radius), min(total_box_width, x + block_radius))
                 for b in
@@ -87,7 +87,7 @@ def load_redlight_violations(master_dataset):
     """
     for index, row in load_from_csv('redlight_violations.csv', 7, 8):
         x, y = index
-        block_radius = 6
+        block_radius = 3
         neighbours = [(a, b) for a in
                 range(max(0, x - block_radius), min(total_box_width, x + block_radius))
                 for b in
