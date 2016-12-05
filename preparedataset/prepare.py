@@ -5,7 +5,7 @@ master dataset
 """
 import csv
 from collections import defaultdict
-from functions import get_box_index, total_box_width, total_box_height
+from functions import get_box_index, total_box_width, total_box_height, get_latitude_longitude
 from safecity import BlockInfo
 import os
 
@@ -23,9 +23,15 @@ class DataLoader:
             for j in range(0, total_box_height + 1):
                 self.master_table[(i, j)] = BlockInfo()
                 self.master_table[(i,j)].index = (i,j)
+                lat_val, long_val = get_latitude_longitude(i,j)
+                # Save the mean latitude and longitude vlaue for the block
+                self.master_table[(i,j)].latitude = lat_val
+                self.master_table[(i,j)].longitude = long_val
 
                 # Calculate and store the latitude and longitude of each block info
                 # self.master_table[(i,j)] = BlockInfo
+
+        print("Initialization done")
 
     def load_from_csv(self, filename, lat_index, long_index):
         """Loads the csv file lazily"""
