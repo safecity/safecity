@@ -5,10 +5,11 @@ master dataset
 """
 import csv
 from collections import defaultdict
-from functions import get_box_index
+from functions import get_box_index, total_box_width, total_box_height
 from safecity import BlockInfo
 
 from datetime import datetime
+
 
 def load_from_csv(filename, lat_index, long_index):
     first = False
@@ -49,7 +50,7 @@ def load_service_requests(master_dataset):
             start_date = datetime.strptime(row[0], "%m/%d/%Y")
             complete_date = datetime.strptime(row[2], "%m/%d/%Y")
 
-            number_days = (complete_date-start_date).days
+            number_days = (complete_date - start_date).days
 
             # Update the average service days
             master_dataset[index].average_service_days = (
@@ -60,11 +61,23 @@ def load_service_requests(master_dataset):
 
 def load_average_traffic_count(master_dataset):
     """
-    TODO: For average traffic count, it is better to increase the traffic volume count
-    of surrounding blocks also...maybe create a gradient for certain distance.
+    Loads the average traffic count of any block. Increases the count of surrounding blocks also
     """
     for index, row in load_from_csv('avg_daily_traffic_count.csv', 6, 7):
-        master_dataset[index].average_traffic_count += int(row[4])
+        x, y = index
+        traffic_count = int(row[4])
+        block_radius = 6
+        neighbours = [(a, b) for a in
+                range(max(0, x - block_radius), min(total_box_width, x + block_radius))
+                for b in
+                range(max(0, y - block_radius), min(total_box_height, y + block_radius))
+                ]
+
+        for neighbour in neighbours:
+            if neighbour != index:
+                master_dataset[neighbour].average_traffic_count += traffic_count / 2
+            else:
+                master_dataset[index].average_traffic_count += traffic_count
     print("Average Traffic Count updated")
 
 
@@ -110,11 +123,11 @@ def load_affordable_housing(master_dataset):
 def prepare_dataset():
     master_table = defaultdict(BlockInfo)
     load_service_requests(master_table)
-    # load_redlight_violations(master_table)
-    # load_average_traffic_count(master_table)
-    # load_police_stations(master_table)
-    # load_affordable_housing(master_table)
-    # load_public_schools(master_table)
+    load_average_traffic_count(master_table)
+    load_redlight_violations(master_table)
+    load_police_stations(master_table)
+    load_affordable_housing(master_table)
+    load_public_schools(master_table)
     # Process the rows if necessary
     for index, block in master_table.items():
         block.index = index
