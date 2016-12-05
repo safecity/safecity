@@ -83,13 +83,20 @@ def load_average_traffic_count(master_dataset):
 
 def load_redlight_violations(master_dataset):
     """
-    Loads the redlight traffic violation data. NOTE: Redlight violation is concentrated
-    in crossing and other places. This needs to be spread out by increasing the count
-    of surrounding blocks also. Weightage can be given to blocks near the block containing
-    traffic light
+    Loads the redlight traffic violation data.
     """
     for index, row in load_from_csv('redlight_violations.csv', 7, 8):
-        master_dataset[index].redlight_violations += 1
+        x, y = index
+        block_radius = 6
+        neighbours = [(a, b) for a in
+                range(max(0, x - block_radius), min(total_box_width, x + block_radius))
+                for b in
+                range(max(0, y - block_radius), min(total_box_height, y + block_radius))
+                ]
+
+        for neighbour in neighbours:
+            master_dataset[neighbour].redlight_violations += 1
+
     print("Redlight violations dataset loaded")
 
 
