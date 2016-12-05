@@ -179,8 +179,11 @@ class DataLoader:
         with open(filepath, 'w', newline='') as csvfile:
             scwriter = csv.writer(csvfile)
             BlockInfo.output_header(scwriter)
-            for index, block in self.master_table.items():
-                block.output_csv(scwriter)
+            for i in range(0, total_box_width + 1):
+                for j in range(0, total_box_height + 1):
+                    index = (i,j)
+                    block = self.master_table[index]
+                    block.output_csv(scwriter)
         print("Output file written")
 
 
