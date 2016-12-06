@@ -13,7 +13,6 @@ from datetime import datetime
 
 
 class DataLoader:
-
     def __init__(self, datadir="data"):
         self.datadir = datadir
 
@@ -30,6 +29,10 @@ class DataLoader:
 
                 # Calculate and store the latitude and longitude of each block info
                 # self.master_table[(i,j)] = BlockInfo
+
+        # Store the position of schools and police stations
+        self.schools = []
+        self.police_stations = []
 
         print("Initialization done")
 
@@ -134,7 +137,7 @@ class DataLoader:
         Loads the police stations data
         """
         for index, row in self.load_from_csv('police_stations.csv', 12, 13):
-            self.master_table[index].police_stations += 1
+            self.police_stations.append(index)
         print("Police Station dataset loaded")
 
     def load_public_schools(self):
@@ -142,7 +145,7 @@ class DataLoader:
         Loads the public school data
         """
         for index, row in self.load_from_csv('public_school_data.csv', 72, 73):
-            pass
+            self.schools.append(index)
         print("Public school progress dataset loaded")
 
     def load_affordable_housing(self):
@@ -178,7 +181,15 @@ class DataLoader:
     def process(self):
         """Process the master table. For example, we can calculate the minimum distance
         from nearest school and police station here"""
-        pass
+        for index, block in self.master_table.items():
+            a = index
+            # Manhattan distance for the blocks
+            min_dist = min([abs(a[0]-b[0]) + abs(a[1]-b[1]) for b in self.schools])
+            self.master_table[index].nearest_school_distance = min_dist
+
+            min_dist = min([abs(a[0]-b[0]) + abs(a[1]-b[1]) for b in self.police_stations])
+            self.master_table[index].nearest_police_station = min_dist
+        print("Processing complete")
 
     def write_all(self, filename="master.csv"):
         filepath = os.path.join(self.datadir, filename)
@@ -196,5 +207,6 @@ class DataLoader:
 def prepare_dataset():
     data_loader = DataLoader()
     data_loader.load_all()
+    data_loader.process()
     # Write to file
     data_loader.write_all()

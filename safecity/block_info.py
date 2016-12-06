@@ -14,7 +14,9 @@ class BlockInfo:
         self.index = (0, 0)
 
         self.average_traffic_count = 0
-        self.police_stations = 0
+
+        self.nearest_police_station = -1
+        self.nearest_school_distance = -1
 
         self.crimes_count = 0
         self.domestic_crimes = 0
@@ -29,7 +31,8 @@ class BlockInfo:
                              self.latitude, self.longitude, self.open_services,
                              self.closed_services, self.average_service_days,
                              self.redlight_violations, self.average_traffic_count,
-                             self.crimes_count, self.domestic_crimes, self.arrest_count
+                             self.crimes_count, self.domestic_crimes, self.arrest_count,
+                             self.nearest_police_station, self.nearest_school_distance
         ])
 
     @staticmethod
@@ -37,4 +40,4 @@ class BlockInfo:
         csvfile.writerow(["X", "Y", "Latitude", "Longitude", "Open services",
                           "Closed Services", "Average service complete days", "Traffic light violations",
                           "Avearge traffic volume count", "Number of crimes", "Domestic Crimes",
-                          "Arrests Made"])
+                          "Arrests Made", "Nearest Police Station", "Nearest school"])
