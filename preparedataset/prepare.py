@@ -36,6 +36,12 @@ class DataLoader:
 
         print("Initialization done")
 
+    def distance(self, x, y):
+        """
+        Distance measure between teo points
+        """
+        return abs(x[0]-y[0]) + abs(x[1]-y[1])
+
     def load_from_csv(self, filename, lat_index, long_index):
         """Loads the csv file lazily"""
         first = False
@@ -105,8 +111,9 @@ class DataLoader:
 
             for neighbour in neighbours:
                 if neighbour != index:
+                    distance  = self.distance(neighbour, index)
                     self.master_table[
-                        neighbour].average_traffic_count += traffic_count / 2
+                        neighbour].average_traffic_count += traffic_count / (distance+1)
                 else:
                     self.master_table[
                         index].average_traffic_count += traffic_count
@@ -128,6 +135,7 @@ class DataLoader:
                           ]
 
             for neighbour in neighbours:
+                # increase the relight violation by one for both neighbours and self
                 self.master_table[neighbour].redlight_violations += 1
 
         print("Redlight violations dataset loaded")
@@ -184,10 +192,10 @@ class DataLoader:
         for index, block in self.master_table.items():
             a = index
             # Manhattan distance for the blocks
-            min_dist = min([abs(a[0]-b[0]) + abs(a[1]-b[1]) for b in self.schools])
+            min_dist = min([self.distance(a,b) for b in self.schools])
             self.master_table[index].nearest_school_distance = min_dist
 
-            min_dist = min([abs(a[0]-b[0]) + abs(a[1]-b[1]) for b in self.police_stations])
+            min_dist = min([self.distance(a,b) for b in self.police_stations])
             self.master_table[index].nearest_police_station = min_dist
         print("Processing complete")
 
