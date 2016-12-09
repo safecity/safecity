@@ -33,6 +33,7 @@ class DataLoader:
         # Store the position of schools and police stations
         self.schools = []
         self.police_stations = []
+        self.affordable_houses = []
 
         print("Initialization done")
 
@@ -40,7 +41,7 @@ class DataLoader:
         """
         Distance measure between teo points
         """
-        return abs(x[0]-y[0]) + abs(x[1]-y[1])
+        return max(abs(x[0]-y[0]) , abs(x[1]-y[1]))
 
     def load_from_csv(self, filename, lat_index, long_index):
         """Loads the csv file lazily"""
@@ -100,7 +101,7 @@ class DataLoader:
         for index, row in self.load_from_csv('avg_daily_traffic_count.csv', 6, 7):
             x, y = index
             traffic_count = int(row[4])
-            block_radius = 3
+            block_radius = 5
             neighbours = [(a, b) for a in
                           range(max(0, x - block_radius),
                                 min(total_box_width, x + block_radius))
@@ -125,7 +126,7 @@ class DataLoader:
         """
         for index, row in self.load_from_csv('redlight_violations.csv', 7, 8):
             x, y = index
-            block_radius = 3
+            block_radius = 5
             neighbours = [(a, b) for a in
                           range(max(0, x - block_radius),
                                 min(total_box_width, x + block_radius))
@@ -137,6 +138,23 @@ class DataLoader:
             for neighbour in neighbours:
                 # increase the relight violation by one for both neighbours and self
                 self.master_table[neighbour].redlight_violations += 1
+
+        # Load speed camera violations in same sataset
+        for index, row in self.load_from_csv('speed_violations.csv', 6, 7):
+            x, y = index
+            block_radius = 5
+            neighbours = [(a, b) for a in
+                          range(max(0, x - block_radius),
+                                min(total_box_width, x + block_radius))
+                          for b in
+                          range(max(0, y - block_radius),
+                                min(total_box_height, y + block_radius))
+                          ]
+
+            for neighbour in neighbours:
+                # increase the relight violation by one for both neighbours and self
+                self.master_table[neighbour].redlight_violations += 1
+
 
         print("Redlight violations dataset loaded")
 
@@ -161,7 +179,7 @@ class DataLoader:
         Loads the affordable housing data
         """
         for index, row in self.load_from_csv('affordable_housing.csv', 11, 12):
-            pass
+            self.affordable_houses.append(index)
         print("Affordable Housing dataset loaded")
 
     def load_criminal_data(self):
@@ -197,6 +215,10 @@ class DataLoader:
 
             min_dist = min([self.distance(a,b) for b in self.police_stations])
             self.master_table[index].nearest_police_station = min_dist
+
+            min_dist = min([self.distance(a,b) for b in self.affordable_houses])
+            self.master_table[index].nearest_affordable_housing = min_dist
+
         print("Processing complete")
 
     def write_all(self, filename="master.csv"):
